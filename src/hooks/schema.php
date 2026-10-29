@@ -21,8 +21,13 @@ class DPV_HOOK_SCHEMA
         if (!DPV_RULES::config()['schema_enabled'] || !$product || $product->is_type('variable') || !DPV_RULES::applies($product) || !DPV_RULES::isSynced($product)) {
             return [];
         }
+        // Mismos tramos agrupados que la tabla de la ficha (con el tope aplicado).
+        $groups = DPV_RULES::groupedTiers($product);
+        if (count($groups) < 2) {
+            return [];
+        }
         $specs = [];
-        foreach (DPV_RULES::tiers() as $tier) {
+        foreach ($groups as $tier) {
             $quantity = ['@type' => 'QuantitativeValue', 'minValue' => (int) $tier['min'], 'unitCode' => 'C62'];
             if ($tier['max']) {
                 $quantity['maxValue'] = (int) $tier['max'];

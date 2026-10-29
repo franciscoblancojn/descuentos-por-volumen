@@ -71,15 +71,24 @@ class DPV_HOOK_CART
         }
         $qty = max($quantities); // en modo carrito todas las líneas tienen el total
         $tier = DPV_RULES::tierFor($qty);
-        $next = DPV_RULES::nextTier($qty);
         $max = DPV_RULES::maxQuantity();
+        // % del tramo con el tope (sin la categoría: el carrito puede mezclar productos).
+        $current = $tier ? DPV_RULES::cap((float) $tier['percent']) : 0;
+        // Siguiente tramo que de verdad mejora el descuento (los que el tope deja igual no cuentan).
+        $next = null;
+        foreach (DPV_RULES::tiers() as $candidate) {
+            if ($candidate['min'] > $qty && DPV_RULES::cap((float) $candidate['percent']) > $current) {
+                $next = $candidate;
+                break;
+            }
+        }
 
         $messages = [];
         if ($tier) {
-            $messages[] = sprintf('Llevas <strong>%d unidades</strong>: descuento por cantidad de <strong>%s %%</strong>.', $qty, wc_format_localized_decimal($tier['percent']));
+            $messages[] = sprintf('Llevas <strong>%d unidades</strong>: descuento por cantidad de <strong>%s %%</strong>.', $qty, wc_format_localized_decimal($current));
         }
         if ($next) {
-            $messages[] = sprintf('Agrega <strong>%d unidades más</strong> y obtén <strong>%s %%</strong>.', $next['min'] - $qty, wc_format_localized_decimal($next['percent']));
+            $messages[] = sprintf('Agrega <strong>%d unidades más</strong> y obtén <strong>%s %%</strong>.', $next['min'] - $qty, wc_format_localized_decimal(DPV_RULES::cap((float) $next['percent'])));
         } elseif ($max && $qty > $max && DPV_RULES::config()['contact_text']) {
             $text = esc_html(DPV_RULES::config()['contact_text']);
             $url = DPV_RULES::config()['contact_url'];

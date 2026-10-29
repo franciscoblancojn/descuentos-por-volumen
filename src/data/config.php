@@ -19,6 +19,7 @@ class DPV_USE_DATA_CONFIG extends DPV_USE_DATA_BASE
         // Descuento adicional por categoría: slug => %.
         'categories' => ['ofertas' => 4],
         'combine' => 'sum',      // sum: 30 % + 4 % = 34 %  ·  chain: 1 − 0,70 × 0,96 = 32,8 %
+        'max_percent' => 40,     // tope del descuento final (tramo + categoría); 0 = sin tope
         'count' => 'cart',       // cart: suma de unidades del carrito  ·  line: unidades de cada producto
         'sync_enabled' => 1,     // mantener el precio rebajado según las reglas al guardar productos
         'cart_enabled' => 1,     // precios por cantidad en el carrito
@@ -36,6 +37,16 @@ class DPV_USE_DATA_CONFIG extends DPV_USE_DATA_BASE
     {
         $this->DATA = $data;
         $this->save();
+    }
+
+    /**
+     * Tope de descuento: entre 0 y 100 (sin incluir); vacío o 0 = sin tope.
+     */
+    private static function sanitizeMax($value)
+    {
+        $max = (float) str_replace(',', '.', trim((string) $value));
+
+        return ($max > 0 && $max < 100) ? $max : 0;
     }
 
     /**
@@ -76,6 +87,7 @@ class DPV_USE_DATA_CONFIG extends DPV_USE_DATA_BASE
             'contact_url' => esc_url_raw(trim((string) ($input['contact_url'] ?? ''))),
             'categories' => $categories,
             'combine' => 'chain' === ($input['combine'] ?? '') ? 'chain' : 'sum',
+            'max_percent' => self::sanitizeMax($input['max_percent'] ?? ''),
             'count' => 'line' === ($input['count'] ?? '') ? 'line' : 'cart',
             'sync_enabled' => empty($input['sync_enabled']) ? 0 : 1,
             'cart_enabled' => empty($input['cart_enabled']) ? 0 : 1,

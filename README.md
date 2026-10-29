@@ -13,7 +13,10 @@
 ```
 precio rebajado (guardado) = precio normal × (1 − (% del 1er tramo + % de su categoría))
 precio en el carrito       = precio normal × (1 − (% del tramo de la cantidad + % de su categoría))
+% final                    = mín(tramo + categoría, descuento máximo)   (40 % por defecto)
 ```
+
+Con el tope, las filas seguidas que quedan con el mismo % se agrupan en la ficha y en el schema. Ejemplo: tramos 30 / 35 / 40 %, categoría +5 % y tope 40 % dan 35 / 40 / 45→40, que se muestran como **1–5: 35 %** y **6–200: 40 %**.
 
 Ejemplo con tramos 1–5 → 30 %, 6–48 → 35 %, 49–200 → 40 % y la categoría Ofertas con +4 %:
 

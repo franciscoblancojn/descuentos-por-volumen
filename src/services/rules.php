@@ -107,13 +107,54 @@ class DPV_RULES
         return $pct;
     }
 
+    /**
+     * % final = combinar(tramo, categoría), con el tope de descuento máximo.
+     */
     public static function combine($tier_pct, $cat_pct)
     {
         if ('chain' === self::config()['combine']) {
-            return round((1 - (1 - $tier_pct / 100) * (1 - $cat_pct / 100)) * 100, 4);
+            $pct = round((1 - (1 - $tier_pct / 100) * (1 - $cat_pct / 100)) * 100, 4);
+        } else {
+            $pct = $tier_pct + $cat_pct;
         }
 
-        return min(99, $tier_pct + $cat_pct);
+        return self::cap($pct);
+    }
+
+    /**
+     * Aplica el descuento máximo (config 'max_percent'; 0 = sin tope, se limita a 99 %).
+     */
+    public static function cap($pct)
+    {
+        $max = (float) self::config()['max_percent'];
+
+        return min($max > 0 ? $max : 99, $pct);
+    }
+
+    /**
+     * Tramos con su % final para un producto, agrupando los consecutivos con el mismo %
+     * (p. ej. por el tope): 1–5 35 %, 6–48 40 %, 49–200 40 % → 1–5 35 %, 6–200 40 %.
+     *
+     * @return array<int, array{min:int, max:int, percent:float}> max 0 = sin límite.
+     */
+    public static function groupedTiers($product)
+    {
+        $groups = [];
+        foreach (self::tiers() as $tier) {
+            $pct = self::percentFor($product, $tier['min']);
+            if (null === $pct) {
+                return [];
+            }
+            $last = count($groups) - 1;
+            $contiguous = $last >= 0 && $groups[$last]['max'] && (int) $tier['min'] === $groups[$last]['max'] + 1;
+            if ($contiguous && abs($groups[$last]['percent'] - $pct) < 0.0001) {
+                $groups[$last]['max'] = (int) $tier['max'];
+            } else {
+                $groups[] = ['min' => (int) $tier['min'], 'max' => (int) $tier['max'], 'percent' => $pct];
+            }
+        }
+
+        return $groups;
     }
 
     public static function isManual($product)

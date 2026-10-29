@@ -42,6 +42,12 @@ class DPV_HOOK_PRODUCT
         if (!$reference || !DPV_RULES::applies($reference) || !DPV_RULES::isSynced($reference)) {
             return;
         }
+        // Tramos con el % final (tope incluido), agrupando filas consecutivas con el mismo %.
+        // Con una sola fila no hay "más descuento por cantidad" que mostrar.
+        $groups = DPV_RULES::groupedTiers($reference);
+        if (count($groups) < 2) {
+            return;
+        }
         $show_price = !$product->is_type('variable');
         ?>
         <div class="dpv-tiers">
@@ -55,11 +61,11 @@ class DPV_HOOK_PRODUCT
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($config['tiers'] as $tier) : ?>
+                    <?php foreach ($groups as $group) : ?>
                         <tr>
-                            <td><?= esc_html($tier['max'] ? $tier['min'] . ' – ' . $tier['max'] : $tier['min'] . ' o más') ?></td>
-                            <td><strong><?= esc_html(wc_format_localized_decimal(DPV_RULES::percentFor($reference, $tier['min']))) ?> %</strong></td>
-                            <?php if ($show_price) : ?><td><?= wp_kses_post(wc_price(DPV_RULES::priceFor($reference, $tier['min']))) ?></td><?php endif; ?>
+                            <td><?= esc_html($group['max'] ? $group['min'] . ' – ' . $group['max'] : $group['min'] . ' o más') ?></td>
+                            <td><strong><?= esc_html(wc_format_localized_decimal(round($group['percent'], 2))) ?> %</strong></td>
+                            <?php if ($show_price) : ?><td><?= wp_kses_post(wc_price(DPV_RULES::priceFor($reference, $group['min']))) ?></td><?php endif; ?>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

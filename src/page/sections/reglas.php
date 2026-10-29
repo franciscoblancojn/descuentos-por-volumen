@@ -101,6 +101,17 @@ $example = 100000;
             </td>
         </tr>
         <tr>
+            <th scope="row"><label for="dpv-max">Descuento máximo</label></th>
+            <td>
+                <input type="number" id="dpv-max" name="dpv[max_percent]" value="<?= esc_attr($config['max_percent'] ? $config['max_percent'] : '') ?>" min="0" max="99.9" step="0.1" placeholder="Sin tope" style="width:90px"> %
+                <p class="description">
+                    Tope del descuento final (tramo + categoría). Si un tramo lo supera, se usa el tope.
+                    En la ficha del producto y en el schema, las filas seguidas que queden con el mismo % se agrupan
+                    (p. ej. 6–48 y 49–200 a 40 % → 6–200: 40 %). Vacío = sin tope.
+                </p>
+            </td>
+        </tr>
+        <tr>
             <th scope="row">Cantidad que define el tramo</th>
             <td>
                 <label><input type="radio" name="dpv[count]" value="cart" <?php checked($config['count'], 'cart'); ?>> Total de unidades del carrito (sumando todos los productos)</label><br>
@@ -127,10 +138,15 @@ $example = 100000;
                             <?php foreach ($config['tiers'] as $tier) : ?>
                                 <tr>
                                     <td><?= esc_html($tier['max'] ? $tier['min'] . ' – ' . $tier['max'] : $tier['min'] . ' o más') ?></td>
-                                    <td><?= esc_html($tier['percent']) ?> % → <?= wp_kses_post(wc_price(DPV_DISCOUNT::calc($example, $tier['percent']))) ?></td>
-                                    <?php foreach ($config['categories'] as $pct) : ?>
-                                        <?php $total = DPV_RULES::combine((float) $tier['percent'], (float) $pct); ?>
-                                        <td><?= esc_html(round($total, 2)) ?> % → <?= wp_kses_post(wc_price(DPV_DISCOUNT::calc($example, $total))) ?></td>
+                                    <?php foreach (array_merge([0], array_values($config['categories'])) as $pct) : ?>
+                                        <?php
+                                        $total = DPV_RULES::combine((float) $tier['percent'], (float) $pct);
+                                        $raw   = 'chain' === $config['combine'] ? round((1 - (1 - $tier['percent'] / 100) * (1 - $pct / 100)) * 100, 2) : $tier['percent'] + $pct;
+                                        ?>
+                                        <td>
+                                            <?= esc_html(round($total, 2)) ?> % → <?= wp_kses_post(wc_price(DPV_DISCOUNT::calc($example, $total))) ?>
+                                            <?php if ($total < $raw) : ?><span class="dpv-badge dpv-badge--manual" title="Sin tope sería <?= esc_attr($raw) ?> %">tope</span><?php endif; ?>
+                                        </td>
                                     <?php endforeach; ?>
                                 </tr>
                             <?php endforeach; ?>

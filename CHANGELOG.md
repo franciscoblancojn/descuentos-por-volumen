@@ -4,6 +4,16 @@ Todos los cambios importantes del plugin Descuentos por Volumen. Formato basado 
 
 > ✍️ Antes de publicar, agrega arriba una sección `## [Sin publicar]` con los cambios. `npm run push-v -- patch|minor|major` la renombra a `## [X.Y.Z] - fecha`, y no publica si esa sección no existe.
 
+## [Sin publicar]
+
+### ✨ Añadido
+- 🧢 **Descuento máximo** (por defecto 40 %) en Reglas. Si el descuento final de un tramo (tramo + categoría, sumando o encadenando) supera el tope, se usa el tope. Aplica al precio rebajado, al carrito, a la tabla de la ficha y al schema.
+- 🧩 En la ficha del producto y en el schema, las filas consecutivas con el mismo % final se **agrupan** (p. ej. 6–48 y 49–200 a 40 % → 6–200: 40 %). Si todo queda en una sola fila, no se muestra la tabla ni se publican tramos.
+
+### 🔁 Cambiado
+- 🛒 El aviso del carrito usa el % con el tope, y solo ofrece el siguiente tramo si de verdad da más descuento.
+- 🧮 El ejemplo de la pestaña Reglas muestra el % final con el tope y marca con "tope" los tramos limitados.
+
 ## [1.1.0] - 2026-10-28
 
 ### ✨ Añadido
