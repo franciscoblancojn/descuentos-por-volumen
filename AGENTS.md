@@ -8,7 +8,7 @@
 
 ## Seguridad
 - Todo AJAX: `check_ajax_referer('dpv_nonce', 'nonce')` + `current_user_can('manage_woocommerce')` (ver `DPV_API_DISCOUNT::guard()`).
-- **Nunca** escribir tokens o claves en el código (ni partidos en arrays, como `token_array_split`). El token de GitHub de `FWUUpdate` va en `wp-config.php` (`DPV_GITHUB_TOKEN`). `npm run check` falla si encuentra uno.
+- El token de GitHub de `FWUUpdate` está en `index.php` (`token_array_split`), como en los demás plugins del autor. No agregar otras claves o secretos al código: `npm run check` falla si encuentra un token escrito de corrido.
 
 ## Arquitectura
 - `index.php`: cabecera y constantes `DPV_*`. Sin lógica.
@@ -17,7 +17,7 @@
 - Reglas: `DPV_RULES` es la única fuente del cálculo (tienda, carrito, tabla de la ficha y schema). Si cambia la fórmula, cambia ahí.
 - Al guardar precios desde el plugin, usar `DPV_DISCOUNT::process()` (suspende la sincronización automática para no pisar la acción).
 - Precios: siempre con la API CRUD de WooCommerce (`set_sale_price()` + `save()`), nunca con `update_post_meta` directo; después de tocar variaciones llamar `DPV_DISCOUNT::syncParents()`.
-- Toda operación que cambie precios debe quedar en el historial (`DPV_USE_DATA_HISTORY`) con el valor anterior, para poder revertir, y en el log (`DPV_LOG::add`).
+- Toda operación que cambie precios debe quedar en el historial (`DPV_USE_DATA_HISTORY`) con el valor anterior, para poder revertir, y en el log (`FWUSystemLog::add(DPV_KEY, ['type' => …, 'data' => …])`).
 
 ## Publicar
 - Anotar los cambios en `CHANGELOG.md` bajo `## [Sin publicar]`.

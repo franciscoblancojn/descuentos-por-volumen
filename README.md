@@ -38,7 +38,7 @@ Ejemplo con tramos 1–5 → 30 %, 6–48 → 35 %, 49–200 → 40 % y la categ
 | ⚡ | **Por lotes** | De a 40 productos, con barra de progreso. |
 | ↩️ | **Historial** | Últimas 30 operaciones, con **Revertir** (precio, fechas de oferta y marca manual). |
 | 📝 | **Log** | `DPV_LOG` en la barra de administración. |
-| 🔄 | **Actualizaciones desde GitHub** | Con `FWUUpdate` de `wordpress_utils`, como los demás plugins. El token va en `wp-config.php`, nunca en el código. |
+| 🔄 | **Actualizaciones desde GitHub** | Con `FWUUpdate` de `wordpress_utils`, configurado en `index.php` como los demás plugins. |
 
 ## ⚠️ A tener en cuenta
 
@@ -56,21 +56,16 @@ Ejemplo con tramos 1–5 → 30 %, 6–48 → 35 %, 49–200 → 40 % y la categ
 
 ## ⚙️ Instalación
 
-1. Descarga `descuentos-por-volumen.zip` de la [última release](https://github.com/franciscoblancojn/descuentos-por-volumen/releases/latest).
+1. Descarga el zip de la rama `master`: https://github.com/franciscoblancojn/descuentos-por-volumen/archive/refs/heads/master.zip
 2. En WordPress: **Plugins → Añadir nuevo → Subir plugin** y actívalo.
 3. Ve a **Descuentos → Reglas**, revisa los tramos y los % por categoría y guarda.
 4. Pulsa **"Recalcular precios rebajados de todos los productos"**.
 
 ## 🔄 Actualizaciones
 
-- Usa `FWUUpdate` (librería `wordpress_utils`): en **Plugins** aparece "Actualizar" cuando hay una release más nueva en GitHub. Descarga el zip de la rama `master`, y el plugin lo instala en su carpeta de siempre.
-- **🔑 Token obligatorio:** `FWUUpdate` siempre envía `Authorization: token …`, y con un token vacío GitHub responde 401 aunque el repo sea público. Agrégalo en `wp-config.php` (token *fine-grained*, solo lectura de este repo):
-
-  ```php
-  define('DPV_GITHUB_TOKEN', '...');
-  ```
-
-  **Nunca en el código**: `npm run check` falla si encuentra uno. Sin token, las actualizaciones automáticas quedan desactivadas y Plugins muestra un aviso.
+- Usa `FWUUpdate` (librería `wordpress_utils`), configurado en `index.php` (repositorio, rama `master` y token), como en los demás plugins.
+- En **Plugins** aparece "Actualizar" cuando hay una release más nueva en GitHub. Para eso, cada versión necesita su release: la crea el workflow al subir el tag.
+- `FWUUpdate` instala el zip de la rama `master`, que se descomprime en la carpeta `descuentos-por-volumen-master`. Conviene hacer la **primera instalación también desde ese zip**, para que la carpeta no cambie con la primera actualización: si cambia, WordPress desactiva el plugin.
 
 ## 🧑‍💻 Desarrollo
 
@@ -100,8 +95,6 @@ descuentos-por-volumen/
 ├── .github/workflows/        # Release con el zip al subir un tag
 └── src/
     ├── _.php                 # Cargador maestro
-    ├── log/                  # DPV_LOG (FWUSystemLog)
-    ├── update/               # DPV_UPDATER (FWUUpdate + token de wp-config + carpeta fija)
     ├── data/                 # DPV_USE_DATA_BASE, _HISTORY, _CONFIG (wp_options)
     ├── services/             # DPV_RULES (motor de reglas), DPV_PRODUCTS (filtros), DPV_DISCOUNT (aplicar)
     ├── hooks/                # sync (al guardar), cart (tramos), product (tabla en la ficha), schema (SEO)

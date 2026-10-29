@@ -1,5 +1,7 @@
 <?php
 
+use franciscoblancojn\wordpress_utils\FWUSystemLog;
+
 /**
  * Guardar la configuración de reglas (formulario de la pestaña Reglas).
  */
@@ -21,7 +23,10 @@ class DPV_API_RULES
         (new DPV_USE_DATA_CONFIG())->set($config);
         DPV_RULES::reset();
 
-        DPV_LOG::add('RULES', 'Reglas guardadas', $config);
+        FWUSystemLog::add(DPV_KEY, [
+            'type' => 'save_rules',
+            'data' => $config,
+        ]);
         set_transient('dpv_respond', [
             'status' => 'ok',
             'message' => $config['tiers']

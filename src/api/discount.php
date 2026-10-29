@@ -1,5 +1,7 @@
 <?php
 
+use franciscoblancojn\wordpress_utils\FWUSystemLog;
+
 /**
  * AJAX del descuento por lotes (evita el límite de tiempo de PHP con muchas variaciones).
  *
@@ -168,17 +170,17 @@ class DPV_API_DISCOUNT
         // Caché de página de LiteSpeed (si está activo): los precios cambiaron.
         do_action('litespeed_purge_all');
 
-        DPV_LOG::add(strtoupper($op['action']), sprintf(
-            '%s: %d productos modificados, %d omitidos',
-            $op['action'],
-            count($op['items']),
-            count($op['skipped'])
-        ), [
-            'op' => $op['id'],
-            'percent' => $op['percent'],
-            'scope' => $op['scope'] ?? null,
-            'source' => $op['source'] ?? null,
-            'skipped' => $op['skipped'],
+        FWUSystemLog::add(DPV_KEY, [
+            'type' => $op['action'],
+            'data' => [
+                'op' => $op['id'],
+                'user' => $op['user'],
+                'percent' => $op['percent'],
+                'scope' => $op['scope'] ?? null,
+                'source' => $op['source'] ?? null,
+                'processed' => count($op['items']),
+                'skipped' => $op['skipped'],
+            ],
         ]);
 
         wp_send_json_success([
