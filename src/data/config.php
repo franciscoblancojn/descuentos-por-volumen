@@ -1,0 +1,87 @@
+<?php
+
+/**
+ * Configuración de las reglas de descuento (opción DPV_CONFIG).
+ */
+class DPV_USE_DATA_CONFIG extends DPV_USE_DATA_BASE
+{
+    protected $KEY = DPV_CONFIG;
+
+    const DEFAULTS = [
+        // Tramos por cantidad: el primero (desde 1) es el descuento que se guarda como precio rebajado.
+        'tiers' => [
+            ['min' => 1, 'max' => 5, 'percent' => 30],
+            ['min' => 6, 'max' => 48, 'percent' => 35],
+            ['min' => 49, 'max' => 200, 'percent' => 40],
+        ],
+        'contact_text' => 'Más de 200 unidades: contáctanos para un precio especial.',
+        'contact_url' => '',
+        // Descuento adicional por categoría: slug => %.
+        'categories' => ['ofertas' => 4],
+        'combine' => 'sum',      // sum: 30 % + 4 % = 34 %  ·  chain: 1 − 0,70 × 0,96 = 32,8 %
+        'count' => 'cart',       // cart: suma de unidades del carrito  ·  line: unidades de cada producto
+        'sync_enabled' => 1,     // mantener el precio rebajado según las reglas al guardar productos
+        'cart_enabled' => 1,     // precios por cantidad en el carrito
+        'table_enabled' => 1,    // tabla "más descuento por cantidad" en la ficha del producto
+        'schema_enabled' => 1,   // precios por cantidad en el schema (WooCommerce / Rank Math)
+        'table_title' => 'Más descuento por cantidad',
+    ];
+
+    public function get()
+    {
+        return array_merge(self::DEFAULTS, $this->DATA);
+    }
+
+    public function set($data)
+    {
+        $this->DATA = $data;
+        $this->save();
+    }
+
+    /**
+     * Normaliza lo que llega del formulario de Reglas.
+     */
+    public static function sanitize($input)
+    {
+        $input = (array) $input;
+        $tiers = [];
+        foreach (preg_split('/\r\n|\r|\n/', (string) ($input['tiers'] ?? '')) as $line) {
+            $parts = array_map('trim', explode('|', $line));
+            if (count($parts) < 3 || '' === $parts[0]) {
+                continue;
+            }
+            $min = absint($parts[0]);
+            $max = '' === $parts[1] ? 0 : absint($parts[1]); // 0 = sin límite
+            $pct = (float) str_replace(',', '.', $parts[2]);
+            if ($min < 1 || $pct <= 0 || $pct >= 100 || ($max && $max < $min)) {
+                continue;
+            }
+            $tiers[] = ['min' => $min, 'max' => $max, 'percent' => $pct];
+        }
+        usort($tiers, function ($a, $b) {
+            return $a['min'] - $b['min'];
+        });
+
+        $categories = [];
+        foreach ((array) ($input['categories'] ?? []) as $slug => $pct) {
+            $pct = (float) str_replace(',', '.', (string) $pct);
+            if ($pct > 0 && $pct < 100) {
+                $categories[sanitize_title($slug)] = $pct;
+            }
+        }
+
+        return [
+            'tiers' => $tiers,
+            'contact_text' => sanitize_text_field(wp_unslash($input['contact_text'] ?? '')),
+            'contact_url' => esc_url_raw(trim((string) ($input['contact_url'] ?? ''))),
+            'categories' => $categories,
+            'combine' => 'chain' === ($input['combine'] ?? '') ? 'chain' : 'sum',
+            'count' => 'line' === ($input['count'] ?? '') ? 'line' : 'cart',
+            'sync_enabled' => empty($input['sync_enabled']) ? 0 : 1,
+            'cart_enabled' => empty($input['cart_enabled']) ? 0 : 1,
+            'table_enabled' => empty($input['table_enabled']) ? 0 : 1,
+            'schema_enabled' => empty($input['schema_enabled']) ? 0 : 1,
+            'table_title' => sanitize_text_field(wp_unslash($input['table_title'] ?? '')),
+        ];
+    }
+}

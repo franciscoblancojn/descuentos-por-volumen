@@ -1,0 +1,39 @@
+/* Descuentos por Volumen — ficha de producto. Prefijo dpv-. */
+.dpv-tiers {
+    margin: 12px 0 18px;
+    padding: 12px 14px;
+    border: 1px dashed currentColor;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.dpv-tiers__title {
+    margin: 0 0 8px;
+    font-weight: 700;
+}
+
+.dpv-tiers table {
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
+}
+
+.dpv-tiers th,
+.dpv-tiers td {
+    padding: 4px 6px;
+    border: 0;
+    border-bottom: 1px solid rgba(0, 0, 0, .08);
+    text-align: left;
+}
+
+.dpv-tiers th {
+    font-size: 12px;
+    font-weight: 600;
+    opacity: .75;
+}
+
+.dpv-tiers__contact {
+    margin: 8px 0 0;
+    font-size: 13px;
+    font-weight: 600;
+}

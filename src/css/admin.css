@@ -1,0 +1,277 @@
+/* Descuentos por Volumen — admin. Prefijo dpv- (las clases fwue- son de wordpress_utils). */
+
+.dpv-version {
+    font-size: 13px;
+    font-weight: 400;
+    color: #646970;
+}
+
+.dpv-muted {
+    color: #8c8f94;
+    font-size: 12px;
+}
+
+.dpv-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.dpv-field select,
+.dpv-field input {
+    min-width: 150px;
+    max-width: 240px;
+}
+
+/* Filtros */
+.dpv-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 12px;
+    margin: 0 0 12px;
+    padding: 14px;
+    border: 1px solid #dcdcde;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.dpv-field--search input {
+    min-width: 220px;
+}
+
+.dpv-filters__actions {
+    display: flex;
+    gap: 6px;
+}
+
+/* Barra de acción (fija arriba al hacer scroll por la tabla) */
+.dpv-actionbar {
+    position: sticky;
+    top: 32px;
+    z-index: 5;
+    margin-bottom: 12px;
+    padding: 14px;
+    border: 1px solid #dcdcde;
+    border-left: 4px solid #2271b1;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .04);
+}
+
+.dpv-actionbar__group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 24px;
+}
+
+.dpv-actionbar__buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.dpv-percent {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.dpv-percent input {
+    width: 90px;
+    min-width: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.dpv-scope {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.dpv-scope legend {
+    margin-bottom: 4px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.dpv-help {
+    margin: 10px 0 0;
+    color: #646970;
+    font-size: 12px;
+}
+
+.dpv-progress {
+    margin-top: 12px;
+}
+
+.dpv-progress__bar {
+    height: 10px;
+    overflow: hidden;
+    border-radius: 5px;
+    background: #f0f0f1;
+}
+
+.dpv-progress__bar span {
+    display: block;
+    width: 0;
+    height: 100%;
+    background: #2271b1;
+    transition: width .3s;
+}
+
+.dpv-progress__text {
+    margin: 6px 0 0;
+    font-size: 12px;
+}
+
+.dpv-message {
+    position: static;
+    margin: 12px 0 0;
+}
+
+.dpv-summary {
+    margin: 0 0 6px;
+    color: #646970;
+}
+
+/* Tabla */
+.dpv-table td,
+.dpv-table th {
+    vertical-align: middle;
+}
+
+.dpv-num {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.dpv-product {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dpv-product img,
+.dpv-noimg {
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    border: 1px solid #f0f0f1;
+    border-radius: 4px;
+    background: #f6f7f7;
+}
+
+.dpv-name {
+    font-weight: 600;
+}
+
+.dpv-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 10px;
+    margin-top: 2px;
+    color: #646970;
+    font-size: 12px;
+}
+
+.dpv-badge {
+    padding: 0 6px;
+    border-radius: 3px;
+    background: #f0f0f1;
+}
+
+.dpv-toggle {
+    margin-top: 2px;
+    font-size: 12px;
+}
+
+.dpv-toggle::before {
+    content: "\25BE ";
+}
+
+.dpv-toggle[aria-expanded="false"]::before {
+    content: "\25B8 ";
+}
+
+.dpv-row--variable td {
+    background: #f6f7f7;
+}
+
+.dpv-row--child .dpv-col-product {
+    padding-left: 34px;
+}
+
+.dpv-row--child .dpv-name {
+    font-weight: 400;
+}
+
+.dpv-row--child .dpv-product img,
+.dpv-row--child .dpv-noimg {
+    flex-basis: 28px;
+    width: 28px;
+    height: 28px;
+}
+
+.dpv-preview {
+    color: #008a20;
+    font-weight: 600;
+}
+
+.dpv-skipped td {
+    color: #b32d2e;
+}
+
+/* Reglas */
+.dpv-intro {
+    max-width: 900px;
+    font-size: 14px;
+}
+
+.dpv-cats {
+    max-width: 560px;
+    max-height: 280px;
+    overflow: auto;
+    padding: 8px 12px;
+    border: 1px solid #dcdcde;
+    border-radius: 6px;
+    background: #fff;
+}
+
+.dpv-cats label {
+    display: block;
+    margin: 3px 0;
+}
+
+.dpv-cats input[type="number"] {
+    width: 70px;
+}
+
+.dpv-sync {
+    margin-top: 10px;
+    padding: 16px;
+    border: 1px solid #dcdcde;
+    border-left: 4px solid #00a32a;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.dpv-sync h2 {
+    margin-top: 0;
+}
+
+.dpv-badge--manual {
+    display: inline-block;
+    margin-left: 4px;
+    background: #fcf0e3;
+    color: #8a4b00;
+    font-size: 11px;
+}
