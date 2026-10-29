@@ -1,6 +1,6 @@
 {
   "name": "descuentos-por-volumen",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "description": "Plugin de WordPress para aplicar descuentos en % a productos de WooCommerce modificando su precio rebajado.",
   "scripts": {

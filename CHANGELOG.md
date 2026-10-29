@@ -4,7 +4,7 @@ Todos los cambios importantes del plugin Descuentos por Volumen. Formato basado 
 
 > ✍️ Antes de publicar, agrega arriba una sección `## [Sin publicar]` con los cambios. `npm run push-v -- patch|minor|major` la renombra a `## [X.Y.Z] - fecha`, y no publica si esa sección no existe.
 
-## [Sin publicar]
+## [1.2.0] - 2026-10-29
 
 ### ✨ Añadido
 - 🧢 **Descuento máximo** (por defecto 40 %) en Reglas. Si el descuento final de un tramo (tramo + categoría, sumando o encadenando) supera el tope, se usa el tope. Aplica al precio rebajado, al carrito, a la tabla de la ficha y al schema.
