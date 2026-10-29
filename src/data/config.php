@@ -45,14 +45,14 @@ class DPV_USE_DATA_CONFIG extends DPV_USE_DATA_BASE
     {
         $input = (array) $input;
         $tiers = [];
-        foreach (preg_split('/\r\n|\r|\n/', (string) ($input['tiers'] ?? '')) as $line) {
-            $parts = array_map('trim', explode('|', $line));
-            if (count($parts) < 3 || '' === $parts[0]) {
+        // Filas de la tabla del formulario: [['min' => …, 'max' => …, 'percent' => …], …]
+        foreach ((array) ($input['tiers'] ?? []) as $row) {
+            if (!is_array($row) || '' === trim((string) ($row['min'] ?? ''))) {
                 continue;
             }
-            $min = absint($parts[0]);
-            $max = '' === $parts[1] ? 0 : absint($parts[1]); // 0 = sin límite
-            $pct = (float) str_replace(',', '.', $parts[2]);
+            $min = absint($row['min']);
+            $max = '' === trim((string) ($row['max'] ?? '')) ? 0 : absint($row['max']); // 0 = sin límite
+            $pct = (float) str_replace(',', '.', (string) ($row['percent'] ?? ''));
             if ($min < 1 || $pct <= 0 || $pct >= 100 || ($max && $max < $min)) {
                 continue;
             }

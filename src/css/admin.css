@@ -275,3 +275,27 @@
     color: #8a4b00;
     font-size: 11px;
 }
+
+/* Tabla de tramos (Reglas) */
+.dpv-tiers-table {
+    max-width: 520px;
+}
+
+.dpv-tiers-table td,
+.dpv-tiers-table th {
+    vertical-align: middle;
+}
+
+.dpv-tiers-table input[type="number"] {
+    width: 110px;
+}
+
+.dpv-tier-remove {
+    color: #b32d2e;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+.dpv-tier-remove:hover {
+    color: #8a2424;
+}

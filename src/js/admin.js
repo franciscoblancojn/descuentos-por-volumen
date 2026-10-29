@@ -91,6 +91,22 @@ jQuery(function ($) {
         $page.find('.nav-tab[data-tab="' + $(this).data('dpv-tab') + '"]').trigger('click');
     });
 
+    // ------------------------------------------------------------------ tramos (pestaña Reglas)
+
+    var tier_index = 0;
+
+    $('#dpv-tier-add').on('click', function () {
+        // Índice único para que los name="dpv[tiers][…]" no choquen con las filas existentes.
+        tier_index += 1;
+        var html = $('#dpv-tier-template').html().replace(/__i__/g, 'new' + tier_index);
+        var $row = $(html).appendTo('#dpv-tiers tbody');
+        $row.find('input').first().trigger('focus');
+    });
+
+    $page.on('click', '.dpv-tier-remove', function () {
+        $(this).closest('tr').remove();
+    });
+
     // ------------------------------------------------------------------ vista previa
 
     $('#dpv-percent').on('input', function () {

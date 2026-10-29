@@ -8,9 +8,22 @@ if ($respond) {
     delete_transient('dpv_respond');
     FWURespond::render($respond);
 }
-$tiers_text = implode("\n", array_map(function ($t) {
-    return $t['min'] . '|' . ($t['max'] ? $t['max'] : '') . '|' . $t['percent'];
-}, $config['tiers']));
+// Sin tramos guardados se muestran los de por defecto, para no empezar con la tabla vacía.
+$tiers = $config['tiers'] ? $config['tiers'] : DPV_USE_DATA_CONFIG::DEFAULTS['tiers'];
+$tier_row = function ($i, $tier) {
+    return sprintf(
+        '<tr class="dpv-tier">
+            <td><input type="number" name="dpv[tiers][%1$s][min]" value="%2$s" min="1" step="1" required aria-label="Mínimo"></td>
+            <td><input type="number" name="dpv[tiers][%1$s][max]" value="%3$s" min="1" step="1" placeholder="Sin límite" aria-label="Máximo"></td>
+            <td><input type="number" name="dpv[tiers][%1$s][percent]" value="%4$s" min="0.1" max="99.9" step="0.1" required aria-label="Descuento %%"> %%</td>
+            <td><button type="button" class="button-link dpv-tier-remove" aria-label="Eliminar fila">✕</button></td>
+        </tr>',
+        esc_attr($i),
+        esc_attr($tier['min']),
+        esc_attr($tier['max'] ? $tier['max'] : ''),
+        esc_attr($tier['percent'])
+    );
+};
 $cats = get_terms(['taxonomy' => 'product_cat', 'hide_empty' => false, 'orderby' => 'name']);
 $by_parent = [];
 foreach (is_wp_error($cats) ? [] : $cats as $term) {
@@ -30,10 +43,21 @@ $example = 100000;
 
     <table class="form-table" role="presentation">
         <tr>
-            <th scope="row"><label for="dpv-tiers">Tramos por cantidad</label></th>
+            <th scope="row">Tramos por cantidad</th>
             <td>
-                <textarea id="dpv-tiers" name="dpv[tiers]" rows="5" class="large-text code" style="max-width:420px"><?= esc_textarea($tiers_text) ?></textarea>
-                <p class="description">Una línea por tramo: <code>desde|hasta|%</code> (hasta vacío = sin límite). Ej.: <code>1|5|30</code>. El tramo que empieza en 1 es el del precio rebajado.</p>
+                <table class="widefat dpv-tiers-table" id="dpv-tiers">
+                    <thead>
+                        <tr><th>Mínimo</th><th>Máximo</th><th>Descuento</th><th></th></tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach (array_values($tiers) as $i => $tier) : ?>
+                            <?= $tier_row($i, $tier) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+                <template id="dpv-tier-template"><?= $tier_row('__i__', ['min' => '', 'max' => '', 'percent' => '']) // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></template>
+                <p><button type="button" class="button" id="dpv-tier-add">+ Agregar tramo</button></p>
+                <p class="description">Máximo vacío = sin límite. Se ordenan solos por el mínimo al guardar. El tramo que empieza en 1 es el que se guarda como precio rebajado.</p>
             </td>
         </tr>
         <tr>
