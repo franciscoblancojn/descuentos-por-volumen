@@ -3,7 +3,7 @@
 Plugin Name: Descuentos por Volumen
 Plugin URI: https://github.com/franciscoblancojn/descuentos-por-volumen
 Description: Descuentos por cantidad y por categoría para WooCommerce. Guarda el primer descuento como precio rebajado (visible en la tienda y en el SEO), aplica tramos por cantidad en el carrito y los publica en el schema del producto. Incluye edición masiva con historial y revertir.
-Version: 1.0.2
+Version: 1.1.0
 Author: franciscoblancojn
 Author URI: https://franciscoblanco.vercel.app/
 License: GPL2+

@@ -4,7 +4,7 @@ Todos los cambios importantes del plugin Descuentos por Volumen. Formato basado 
 
 > ✍️ Antes de publicar, agrega arriba una sección `## [Sin publicar]` con los cambios. `npm run push-v -- patch|minor|major` la renombra a `## [X.Y.Z] - fecha`, y no publica si esa sección no existe.
 
-## [Sin publicar]
+## [1.1.0] - 2026-10-28
 
 ### ✨ Añadido
 - 🔄 **Sincronización automática en segundo plano** (Action Scheduler de WooCommerce). El precio rebajado de las reglas se aplica solo, sin pulsar "Recalcular":
