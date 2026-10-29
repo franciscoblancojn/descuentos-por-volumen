@@ -4,7 +4,7 @@ Todos los cambios importantes del plugin Descuentos por Volumen. Formato basado 
 
 > ✍️ Antes de publicar, agrega arriba una sección `## [Sin publicar]` con los cambios. `npm run push-v -- patch|minor|major` la renombra a `## [X.Y.Z] - fecha`, y no publica si esa sección no existe.
 
-## [Sin publicar]
+## [1.0.2] - 2026-10-28
 
 ### 🔁 Cambiado
 - 📊 Los tramos por cantidad se editan en una **tabla** (Mínimo, Máximo, Descuento %), con un botón "+ Agregar tramo" y otro ✕ para eliminar filas. Antes era un texto `desde|hasta|%`. Por defecto trae las tarifas 1–5 → 30 %, 6–48 → 35 % y 49–200 → 40 %.

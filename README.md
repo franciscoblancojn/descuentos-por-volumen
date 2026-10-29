@@ -2,7 +2,7 @@
 
 > Plugin de WordPress para WooCommerce: **descuentos por cantidad y por categoría**. Guarda el primer descuento como **precio rebajado**, para que se vea en la tienda, en Google y en los feeds. Aplica los demás tramos en el carrito y los publica en el schema del producto.
 
-**Versión:** 1.0.1 · **WordPress:** 5.8+ · **PHP:** 7.4+ · **WooCommerce:** requerido · **Licencia:** GPLv2+
+**Versión:** 1.0.2 · **WordPress:** 5.8+ · **PHP:** 7.4+ · **WooCommerce:** requerido · **Licencia:** GPLv2+
 
 📋 [Registro de cambios](CHANGELOG.md) · 🤖 [Reglas para IAs](AGENTS.md) · 📦 [Releases](https://github.com/franciscoblancojn/descuentos-por-volumen/releases)
 
