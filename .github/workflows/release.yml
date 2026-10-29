@@ -1,5 +1,6 @@
 # Publica una release al subir un tag X.Y.Z (npm run push-v -- patch|minor|major).
-# El plugin la detecta (Update URI) y WordPress la instala desde Plugins → Actualizar.
+# FWUUpdate (wordpress_utils) consulta /releases/latest para saber si hay versión nueva: sin
+# release, el tag solo no basta. El zip adjunto sirve para instalar a mano.
 name: release
 
 on:

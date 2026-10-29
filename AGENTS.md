@@ -8,7 +8,7 @@
 
 ## Seguridad
 - Todo AJAX: `check_ajax_referer('dpv_nonce', 'nonce')` + `current_user_can('manage_woocommerce')` (ver `DPV_API_DISCOUNT::guard()`).
-- **Nunca** escribir tokens o claves en el código. El token de GitHub opcional va en `wp-config.php` (`DPV_GITHUB_TOKEN`). `npm run check` falla si encuentra uno.
+- **Nunca** escribir tokens o claves en el código (ni partidos en arrays, como `token_array_split`). El token de GitHub de `FWUUpdate` va en `wp-config.php` (`DPV_GITHUB_TOKEN`). `npm run check` falla si encuentra uno.
 
 ## Arquitectura
 - `index.php`: cabecera y constantes `DPV_*`. Sin lógica.

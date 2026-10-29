@@ -38,7 +38,7 @@ Ejemplo con tramos 1–5 → 30 %, 6–48 → 35 %, 49–200 → 40 % y la categ
 | ⚡ | **Por lotes** | De a 40 productos, con barra de progreso. |
 | ↩️ | **Historial** | Últimas 30 operaciones, con **Revertir** (precio, fechas de oferta y marca manual). |
 | 📝 | **Log** | `DPV_LOG` en la barra de administración. |
-| 🔄 | **Actualizaciones desde GitHub** | Cabecera `Update URI` + releases, sin token en el código. |
+| 🔄 | **Actualizaciones desde GitHub** | Con `FWUUpdate` de `wordpress_utils`, como los demás plugins. El token va en `wp-config.php`, nunca en el código. |
 
 ## ⚠️ A tener en cuenta
 
@@ -49,7 +49,7 @@ Ejemplo con tramos 1–5 → 30 %, 6–48 → 35 %, 49–200 → 40 % y la categ
 
 ## 📋 Requisitos
 
-- WordPress 5.8+ (por la cabecera `Update URI`)
+- WordPress 5.8+
 - PHP 7.4+
 - WooCommerce activo
 - Permiso `manage_woocommerce` (administrador o gestor de la tienda)
@@ -63,8 +63,14 @@ Ejemplo con tramos 1–5 → 30 %, 6–48 → 35 %, 49–200 → 40 % y la categ
 
 ## 🔄 Actualizaciones
 
-- **En el sitio:** Plugins → "Buscar actualizaciones" (en la fila del plugin) → **Actualizar ahora**.
-- **🔑 Token de GitHub:** no hace falta mientras el repositorio sea público. Si se necesita, va en `wp-config.php`: `define('DPV_GITHUB_TOKEN', '...');`. **Nunca en el código.**
+- Usa `FWUUpdate` (librería `wordpress_utils`): en **Plugins** aparece "Actualizar" cuando hay una release más nueva en GitHub. Descarga el zip de la rama `master`, y el plugin lo instala en su carpeta de siempre.
+- **🔑 Token obligatorio:** `FWUUpdate` siempre envía `Authorization: token …`, y con un token vacío GitHub responde 401 aunque el repo sea público. Agrégalo en `wp-config.php` (token *fine-grained*, solo lectura de este repo):
+
+  ```php
+  define('DPV_GITHUB_TOKEN', '...');
+  ```
+
+  **Nunca en el código**: `npm run check` falla si encuentra uno. Sin token, las actualizaciones automáticas quedan desactivadas y Plugins muestra un aviso.
 
 ## 🧑‍💻 Desarrollo
 
@@ -95,7 +101,7 @@ descuentos-por-volumen/
 └── src/
     ├── _.php                 # Cargador maestro
     ├── log/                  # DPV_LOG (FWUSystemLog)
-    ├── update/               # DPV_UPDATER (GitHub Releases + Update URI)
+    ├── update/               # DPV_UPDATER (FWUUpdate + token de wp-config + carpeta fija)
     ├── data/                 # DPV_USE_DATA_BASE, _HISTORY, _CONFIG (wp_options)
     ├── services/             # DPV_RULES (motor de reglas), DPV_PRODUCTS (filtros), DPV_DISCOUNT (aplicar)
     ├── hooks/                # sync (al guardar), cart (tramos), product (tabla en la ficha), schema (SEO)

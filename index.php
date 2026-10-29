@@ -11,7 +11,6 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: descuentos-por-volumen
 Requires at least: 5.8
 Requires PHP: 7.4
-Update URI: https://github.com/franciscoblancojn/descuentos-por-volumen
 */
 
 if (!defined('ABSPATH')) {
@@ -45,10 +44,57 @@ function DPV_get_version()
     return $plugin_data['Version'];
 }
 
-require_once DPV_DIR . 'src/log/_.php';
-// Actualizaciones desde GitHub Releases (sin token en el código; ver src/update/updater.php).
-require_once DPV_DIR . 'src/update/_.php';
+use franciscoblancojn\wordpress_utils\FWUUpdate;
 
+FWUUpdate::init([
+    'basename' => DPV_BASENAME,
+    'dir' => DPV_DIR,
+    'file' => "index.php",
+    'path_repository' => 'franciscoblancojn/descuentos-por-volumen',
+    'branch' => 'master',
+    'token_array_split' => [
+        "g",
+        "h",
+        "p",
+        "_",
+        "G",
+        "4",
+        "W",
+        "E",
+        "W",
+        "F",
+        "p",
+        "V",
+        "U",
+        "E",
+        "F",
+        "V",
+        "x",
+        "F",
+        "U",
+        "n",
+        "b",
+        "M",
+        "k",
+        "P",
+        "R",
+        "x",
+        "o",
+        "f",
+        "t",
+        "Y",
+        "8",
+        "z",
+        "j",
+        "t",
+        "4",
+        "E",
+        "x",
+        "b",
+        "i",
+        "9"
+    ]
+]);
 use franciscoblancojn\wordpress_utils\FWUSystemLog;
 
 if (is_admin()) {
