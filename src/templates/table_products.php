@@ -5,6 +5,19 @@ function DPV_Price($value)
     return '' === $value || null === $value ? '<span class="dpv-muted">—</span>' : wp_kses_post(wc_price($value));
 }
 
+/**
+ * Nombre del tipo de producto (wc_get_product_types() no incluye las variaciones).
+ */
+function DPV_Type_Label($type)
+{
+    if ('variation' === $type) {
+        return 'Variación';
+    }
+    $types = function_exists('wc_get_product_types') ? wc_get_product_types() : [];
+
+    return $types[$type] ?? ucfirst($type);
+}
+
 function DPV_Row($row, $is_child = false, $parent_id = 0)
 {
     $classes = ['dpv-row', 'dpv-row--' . $row['type']];
@@ -41,7 +54,7 @@ function DPV_Row($row, $is_child = false, $parent_id = 0)
                 </div>
             </div>
         </td>
-        <td><?= esc_html(wc_get_product_type_name($row['type'])) ?></td>
+        <td><?= esc_html(DPV_Type_Label($row['type'])) ?></td>
         <td class="dpv-num"><?= $row['priced'] ? DPV_Price($row['regular']) : '' ?></td>
         <td class="dpv-num">
             <?= $row['priced'] ? DPV_Price($row['sale']) : '' ?>
