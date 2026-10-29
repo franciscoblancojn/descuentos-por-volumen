@@ -7,7 +7,7 @@ $labels = [
     'apply' => 'Aplicar descuento',
     'remove' => 'Quitar precio rebajado',
     'rules' => 'Volver a reglas',
-    'sync' => 'Recalcular según reglas',
+    'sync' => 'Sincronizar con las reglas',
     'revert' => 'Revertir',
 ];
 $max_rows = 200; // por operación, para que la página no se vuelva lenta

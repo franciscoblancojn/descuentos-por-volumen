@@ -160,4 +160,46 @@ class DPV_RULES
     {
         return self::priceFor($product, 1);
     }
+
+    /**
+     * Cuántos productos/variaciones con reglas tienen un precio rebajado distinto del de las
+     * reglas (p. ej. creados antes de activar el plugin). Caché de 10 min; se borra al guardar
+     * reglas y al terminar una operación.
+     *
+     * @return array{pending:int, total:int}
+     */
+    public static function syncStatus()
+    {
+        $cached = get_transient('dpv_sync_status');
+        if (is_array($cached)) {
+            return $cached;
+        }
+        $status = ['pending' => 0, 'total' => 0];
+        foreach (DPV_PRODUCTS::pricedIdsByFilters(DPV_PRODUCTS::filters([])) as $id) {
+            $product = wc_get_product($id);
+            if (!self::applies($product)) {
+                continue;
+            }
+            $status['total']++;
+            if (!self::isSynced($product)) {
+                $status['pending']++;
+            }
+        }
+        set_transient('dpv_sync_status', $status, 10 * MINUTE_IN_SECONDS);
+
+        return $status;
+    }
+
+    /**
+     * ¿El precio rebajado guardado es el de las reglas? Si no (producto creado antes de activar
+     * el plugin, reglas cambiadas sin "Recalcular"…), la tabla y el schema de tramos no se
+     * muestran: dirían un precio para 1 unidad distinto del que ve el cliente y Google.
+     */
+    public static function isSynced($product)
+    {
+        $expected = self::salePrice($product);
+
+        return null !== $expected
+            && (string) $product->get_sale_price('edit') === (string) wc_format_decimal($expected, DPV_DISCOUNT::decimals());
+    }
 }

@@ -18,7 +18,7 @@ class DPV_HOOK_SCHEMA
      */
     public static function specifications($product)
     {
-        if (!DPV_RULES::config()['schema_enabled'] || !$product || $product->is_type('variable') || !DPV_RULES::applies($product)) {
+        if (!DPV_RULES::config()['schema_enabled'] || !$product || $product->is_type('variable') || !DPV_RULES::applies($product) || !DPV_RULES::isSynced($product)) {
             return [];
         }
         $specs = [];
@@ -45,8 +45,13 @@ class DPV_HOOK_SCHEMA
             return $offer;
         }
         $current = $offer['priceSpecification'] ?? [];
-        if ($current && isset($current['@type'])) {
-            $current = [$current]; // una sola especificación → lista
+        // Una sola especificación (objeto) → lista. Rank Math la publica sin "@type", así que se
+        // detecta por tener claves de texto, no por "@type".
+        if ($current && array_keys($current) !== range(0, count($current) - 1)) {
+            if (empty($current['@type'])) {
+                $current['@type'] = 'UnitPriceSpecification';
+            }
+            $current = [$current];
         }
         $offer['priceSpecification'] = array_merge((array) $current, $specs);
 

@@ -59,6 +59,7 @@ function DPV_Row($row, $is_child = false, $parent_id = 0)
         <td class="dpv-num">
             <?= $row['priced'] ? DPV_Price($row['sale']) : '' ?>
             <?php if ($row['manual']) : ?><span class="dpv-badge dpv-badge--manual" title="Precio puesto a mano: las reglas no lo cambian">manual</span><?php endif; ?>
+            <?php if (false === ($row['synced'] ?? null)) : ?><span class="dpv-badge dpv-badge--unsynced" title="El precio rebajado no es el de las reglas. Usa Reglas → Recalcular, o Volver a reglas.">sin sincronizar</span><?php endif; ?>
             <?php if ($row['scheduled']) : ?><div class="dpv-muted" title="Oferta programada">🗓 <?= esc_html($row['scheduled']) ?></div><?php endif; ?>
         </td>
         <td class="dpv-num"><?= null !== $row['percent'] ? esc_html($row['percent']) . ' %' : '' ?></td>

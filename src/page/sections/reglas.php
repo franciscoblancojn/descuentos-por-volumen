@@ -146,7 +146,24 @@ $example = 100000;
 
 <div class="dpv-sync">
     <h2>Aplicar las reglas a los productos</h2>
-    <p>Recalcula el precio rebajado de <strong>todos</strong> los productos y variaciones según las reglas guardadas. Los que tienen precio <em>manual</em> no se tocan. Queda en el historial y se puede revertir.</p>
+    <?php $sync_status = DPV_RULES::syncStatus(); ?>
+    <?php if ($sync_status['pending'] && DPV_HOOK_AUTO_SYNC::running()) : ?>
+        <div class="notice notice-info inline"><p>
+            🔄 Sincronizando en segundo plano: faltan <strong><?= (int) $sync_status['pending'] ?> de <?= (int) $sync_status['total'] ?></strong> productos/variaciones.
+            No hace falta hacer nada; recarga en unos minutos. Queda en el <a href="#tag-historial" data-dpv-tab="historial">historial</a>.
+        </p></div>
+    <?php elseif ($sync_status['pending']) : ?>
+        <div class="notice notice-warning inline"><p>
+            ⚠️ <strong><?= (int) $sync_status['pending'] ?> de <?= (int) $sync_status['total'] ?></strong> productos/variaciones con reglas todavía no tienen el precio rebajado de las reglas
+            (por ejemplo, los que existían antes de activar el plugin). Mientras tanto, no muestran la tabla de descuentos por cantidad ni los tramos en el schema.
+        </p></div>
+    <?php elseif ($sync_status['total']) : ?>
+        <p>✅ Los <?= (int) $sync_status['total'] ?> productos/variaciones con reglas tienen el precio rebajado al día.</p>
+    <?php endif; ?>
+    <p>
+        Los precios rebajados se mantienen <strong>solos</strong>: al guardar un producto, al guardar las reglas, al activar o actualizar el plugin y una vez al día
+        (en segundo plano). Este botón hace lo mismo al momento, con barra de progreso. Los productos con precio <em>manual</em> no se tocan. Todo queda en el historial y se puede revertir.
+    </p>
     <button type="button" class="button button-primary" id="dpv-sync-all">Recalcular precios rebajados de todos los productos</button>
     <div class="dpv-progress" id="dpv-sync-progress" hidden>
         <div class="dpv-progress__bar"><span></span></div>

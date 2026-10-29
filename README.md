@@ -32,7 +32,7 @@ Ejemplo con tramos 1–5 → 30 %, 6–48 → 35 %, 49–200 → 40 % y la categ
 | | Funcionalidad | Detalle |
 |---|---|---|
 | ⚙️ | **Reglas** | Tramos `desde|hasta|%`, % adicional por categoría (incluye subcategorías), combinar **sumando** (30 + 4 = 34 %) o **encadenando** (32,8 %), cantidad por carrito o por producto. Ejemplo calculado en la misma pantalla. |
-| 🔄 | **Sincronización** | El precio rebajado se recalcula al guardar un producto: cambio de precio normal, de categoría, importaciones. Hay un botón **"Recalcular todos"** para aplicar las reglas a todo el catálogo. |
+| 🔄 | **Sincronización automática** | El precio rebajado se mantiene solo: al guardar un producto (cambio de precio, categoría, importación) y, en segundo plano con Action Scheduler, al activar o actualizar el plugin, al guardar las reglas y una vez al día. El botón **"Recalcular todos"** hace lo mismo al momento. |
 | ✋ | **Precios manuales** | Si se cambia el precio rebajado a mano, o con la herramienta masiva, el producto queda como **manual** y las reglas no lo tocan. "Volver a reglas" lo devuelve. |
 | 📋 | **Tabla de productos** | Productos y variaciones, con filtros por búsqueda, categoría, etiqueta, marca, tipo y estado del descuento. Acciones: % manual, quitar precio rebajado o volver a reglas, sobre los seleccionados o sobre todos los filtrados. |
 | ⚡ | **Por lotes** | De a 40 productos, con barra de progreso. |

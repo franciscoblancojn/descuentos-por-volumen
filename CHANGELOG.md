@@ -4,6 +4,22 @@ Todos los cambios importantes del plugin Descuentos por Volumen. Formato basado 
 
 > ✍️ Antes de publicar, agrega arriba una sección `## [Sin publicar]` con los cambios. `npm run push-v -- patch|minor|major` la renombra a `## [X.Y.Z] - fecha`, y no publica si esa sección no existe.
 
+## [Sin publicar]
+
+### ✨ Añadido
+- 🔄 **Sincronización automática en segundo plano** (Action Scheduler de WooCommerce). El precio rebajado de las reglas se aplica solo, sin pulsar "Recalcular":
+  - al activar o actualizar el plugin (catálogo que ya existía);
+  - al guardar las reglas;
+  - una vez al día, como revisión de seguridad.
+
+  Solo toca los productos sin sincronizar, nunca los manuales. Cada pasada con cambios queda en el historial y se puede revertir.
+- ⚠️ Aviso en **Reglas** con cuántos productos/variaciones no tienen todavía el precio rebajado de las reglas (por ejemplo, los que existían antes de activar el plugin), junto al botón "Recalcular".
+- 🏷️ Etiqueta **"sin sincronizar"** en la tabla de Productos, para los productos cuyo precio rebajado no es el de las reglas.
+
+### 🐛 Corregido
+- 🔍 La tabla "Más descuento por cantidad" y los tramos del schema solo se publican si el precio rebajado guardado es el de las reglas. Antes, un producto sin sincronizar (por ejemplo, creado antes de activar el plugin) mostraba "1–5 u.: $14.000" mientras su precio era $20.000.
+- 🔍 Schema con Rank Math: su `priceSpecification` es un objeto sin `@type` y se mezclaba con los tramos, lo que dejaba un JSON inválido para Google. Ahora se convierte en lista: el precio original más un precio por tramo.
+
 ## [1.0.2] - 2026-10-28
 
 ### 🔁 Cambiado

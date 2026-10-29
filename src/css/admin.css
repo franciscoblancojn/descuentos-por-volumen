@@ -299,3 +299,11 @@
 .dpv-tier-remove:hover {
     color: #8a2424;
 }
+
+.dpv-badge--unsynced {
+    display: inline-block;
+    margin-left: 4px;
+    background: #fcf0f1;
+    color: #8a2424;
+    font-size: 11px;
+}

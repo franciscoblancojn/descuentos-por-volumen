@@ -169,6 +169,7 @@ class DPV_API_DISCOUNT
 
         // Caché de página de LiteSpeed (si está activo): los precios cambiaron.
         do_action('litespeed_purge_all');
+        delete_transient('dpv_sync_status');
 
         FWUSystemLog::add(DPV_KEY, [
             'type' => $op['action'],

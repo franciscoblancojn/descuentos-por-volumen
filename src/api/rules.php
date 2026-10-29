@@ -22,6 +22,8 @@ class DPV_API_RULES
         $config = DPV_USE_DATA_CONFIG::sanitize(wp_unslash($_POST['dpv'] ?? []));
         (new DPV_USE_DATA_CONFIG())->set($config);
         DPV_RULES::reset();
+        delete_transient('dpv_sync_status');
+        $scheduled = DPV_HOOK_AUTO_SYNC::schedule();
 
         FWUSystemLog::add(DPV_KEY, [
             'type' => 'save_rules',
@@ -29,9 +31,11 @@ class DPV_API_RULES
         ]);
         set_transient('dpv_respond', [
             'status' => 'ok',
-            'message' => $config['tiers']
-                ? 'Reglas guardadas. Usa "Recalcular precios rebajados" para aplicarlas a los productos existentes.'
-                : 'Reglas guardadas, pero no hay tramos válidos: las reglas no se aplican.',
+            'message' => !$config['tiers']
+                ? 'Reglas guardadas, pero no hay tramos válidos: las reglas no se aplican.'
+                : ($scheduled
+                    ? 'Reglas guardadas. Los precios rebajados de los productos se actualizan solos en segundo plano en unos minutos.'
+                    : 'Reglas guardadas. Usa "Recalcular precios rebajados" para aplicarlas a los productos existentes.'),
         ], 60);
 
         wp_safe_redirect(admin_url('admin.php?page=' . DPV_KEY));

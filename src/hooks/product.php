@@ -39,7 +39,7 @@ class DPV_HOOK_PRODUCT
                 }
             }
         }
-        if (!$reference || !DPV_RULES::applies($reference)) {
+        if (!$reference || !DPV_RULES::applies($reference) || !DPV_RULES::isSynced($reference)) {
             return;
         }
         $show_price = !$product->is_type('variable');

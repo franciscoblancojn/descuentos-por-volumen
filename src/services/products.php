@@ -174,6 +174,8 @@ class DPV_PRODUCTS
             'scheduled' => ($from || $to) ? trim(($from ? $from->date_i18n('Y-m-d') : '…') . ' → ' . ($to ? $to->date_i18n('Y-m-d') : '…')) : '',
             'priced' => !$product->is_type('variable'),
             'manual' => DPV_RULES::isManual($product),
+            // false = las reglas aplican pero el precio rebajado guardado no es el de las reglas
+            'synced' => DPV_RULES::applies($product) ? DPV_RULES::isSynced($product) : null,
         ];
     }
 
