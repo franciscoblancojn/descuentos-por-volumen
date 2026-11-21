@@ -4,6 +4,14 @@ Todos los cambios importantes del plugin Descuentos por Volumen. Formato basado 
 
 > ✍️ Antes de publicar, agrega arriba una sección `## [Sin publicar]` con los cambios. `npm run push-v -- patch|minor|major` la renombra a `## [X.Y.Z] - fecha`, y no publica si esa sección no existe.
 
+## [1.2.1] - 2026-11-21
+
+### ✨ Añadido
+- 🔌 Interruptor **Descuento por cantidad** en Reglas. Desactivado, el precio rebajado es solo el % de la categoría del producto: sin tramos en el carrito, la tabla de la ficha ni el schema, y los productos de categorías sin % no se tocan. Los tramos guardados se conservan para volver a activarlos.
+
+### 🔁 Cambiado
+- 💬 Al guardar sin tramos válidos, el aviso sugiere desactivar el descuento por cantidad si solo se quiere el de categoría.
+
 ## [1.2.0] - 2026-10-29
 
 ### ✨ Añadido

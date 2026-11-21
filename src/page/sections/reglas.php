@@ -43,6 +43,13 @@ $example = 100000;
 
     <table class="form-table" role="presentation">
         <tr>
+            <th scope="row">Descuento por cantidad</th>
+            <td>
+                <label><input type="checkbox" name="dpv[tiers_enabled]" value="1" id="dpv-tiers-enabled" <?php checked($config['tiers_enabled']); ?>> Activar los tramos por cantidad</label>
+                <p class="description">Desactivado: el precio rebajado es solo el % de la categoría del producto (sin tramos en el carrito, la ficha ni el schema). Los productos de categorías sin % no se tocan.</p>
+            </td>
+        </tr>
+        <tr class="dpv-tiers-only">
             <th scope="row">Tramos por cantidad</th>
             <td>
                 <table class="widefat dpv-tiers-table" id="dpv-tiers">
@@ -60,7 +67,7 @@ $example = 100000;
                 <p class="description">Máximo vacío = sin límite. Se ordenan solos por el mínimo al guardar. El tramo que empieza en 1 es el que se guarda como precio rebajado.</p>
             </td>
         </tr>
-        <tr>
+        <tr class="dpv-tiers-only">
             <th scope="row"><label for="dpv-contact">Por encima del último tramo</label></th>
             <td>
                 <input type="text" id="dpv-contact" name="dpv[contact_text]" value="<?= esc_attr($config['contact_text']) ?>" class="large-text" style="max-width:520px">
@@ -93,7 +100,7 @@ $example = 100000;
                 <p class="description">Se suma (o encadena) al % del tramo. Incluye las subcategorías. Si un producto está en varias categorías con %, se usa el mayor.</p>
             </td>
         </tr>
-        <tr>
+        <tr class="dpv-tiers-only">
             <th scope="row">Combinar tramo + categoría</th>
             <td>
                 <label><input type="radio" name="dpv[combine]" value="sum" <?php checked($config['combine'], 'sum'); ?>> Sumar: 30 % + 4 % = <strong>34 %</strong></label><br>
@@ -111,7 +118,7 @@ $example = 100000;
                 </p>
             </td>
         </tr>
-        <tr>
+        <tr class="dpv-tiers-only">
             <th scope="row">Cantidad que define el tramo</th>
             <td>
                 <label><input type="radio" name="dpv[count]" value="cart" <?php checked($config['count'], 'cart'); ?>> Total de unidades del carrito (sumando todos los productos)</label><br>
@@ -128,14 +135,14 @@ $example = 100000;
                 <label><input type="checkbox" name="dpv[schema_enabled]" value="1" <?php checked($config['schema_enabled']); ?>> Publicar los precios por cantidad en el schema (SEO, WooCommerce y Rank Math)</label>
             </td>
         </tr>
-        <?php if ($config['tiers']) : ?>
+        <?php if ($config['tiers'] || !DPV_RULES::tiersEnabled()) : ?>
             <tr>
                 <th scope="row">Ejemplo</th>
                 <td>
                     <table class="widefat striped" style="max-width:520px">
                         <thead><tr><th>Cantidad</th><th>Sin categoría</th><?php foreach ($config['categories'] as $slug => $pct) : ?><th><?= esc_html($slug) ?> (+<?= esc_html($pct) ?> %)</th><?php endforeach; ?></tr></thead>
                         <tbody>
-                            <?php foreach ($config['tiers'] as $tier) : ?>
+                            <?php foreach (DPV_RULES::tiers() as $tier) : ?>
                                 <tr>
                                     <td><?= esc_html($tier['max'] ? $tier['min'] . ' – ' . $tier['max'] : $tier['min'] . ' o más') ?></td>
                                     <?php foreach (array_merge([0], array_values($config['categories'])) as $pct) : ?>

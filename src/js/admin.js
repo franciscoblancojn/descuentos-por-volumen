@@ -107,6 +107,22 @@ jQuery(function ($) {
         $(this).closest('tr').remove();
     });
 
+    // Con el descuento por cantidad apagado se ocultan sus opciones (y sus campos dejan de ser
+    // obligatorios para poder guardar; los tramos se conservan por si se vuelve a activar).
+    function dpv_toggle_tiers() {
+        var on = $('#dpv-tiers-enabled').is(':checked');
+        $page.find('.dpv-tiers-only').prop('hidden', !on);
+        $('#dpv-tiers input[type="number"]').each(function () {
+            var $input = $(this);
+            if (undefined === $input.data('dpv-required')) {
+                $input.data('dpv-required', $input.prop('required'));
+            }
+            $input.prop('required', on && $input.data('dpv-required'));
+        });
+    }
+    $('#dpv-tiers-enabled').on('change', dpv_toggle_tiers);
+    dpv_toggle_tiers();
+
     // ------------------------------------------------------------------ vista previa
 
     $('#dpv-percent').on('input', function () {

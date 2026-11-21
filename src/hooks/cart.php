@@ -17,7 +17,7 @@ class DPV_HOOK_CART
 
     private static function enabled()
     {
-        return DPV_RULES::config()['cart_enabled'];
+        return DPV_RULES::config()['cart_enabled'] && DPV_RULES::tiersEnabled();
     }
 
     /**

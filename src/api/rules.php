@@ -31,11 +31,13 @@ class DPV_API_RULES
         ]);
         set_transient('dpv_respond', [
             'status' => 'ok',
-            'message' => !$config['tiers']
-                ? 'Reglas guardadas, pero no hay tramos válidos: las reglas no se aplican.'
+            'message' => !$config['tiers_enabled'] && !$config['categories']
+                ? 'Reglas guardadas. El descuento por cantidad está desactivado y ninguna categoría tiene %: las reglas no se aplican.'
+                : ($config['tiers_enabled'] && !$config['tiers']
+                ? 'Reglas guardadas, pero no hay tramos válidos: las reglas no se aplican. Si solo quieres el descuento por categoría, desactiva el descuento por cantidad.'
                 : ($scheduled
                     ? 'Reglas guardadas. Los precios rebajados de los productos se actualizan solos en segundo plano en unos minutos.'
-                    : 'Reglas guardadas. Usa "Recalcular precios rebajados" para aplicarlas a los productos existentes.'),
+                    : 'Reglas guardadas. Usa "Recalcular precios rebajados" para aplicarlas a los productos existentes.')),
         ], 60);
 
         wp_safe_redirect(admin_url('admin.php?page=' . DPV_KEY));

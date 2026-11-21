@@ -23,7 +23,7 @@ class DPV_HOOK_PRODUCT
     {
         global $product;
         $config = DPV_RULES::config();
-        if (!$config['table_enabled'] || !$product || count($config['tiers']) < 2) {
+        if (!$config['table_enabled'] || !$product || !DPV_RULES::tiersEnabled() || count($config['tiers']) < 2) {
             return;
         }
 

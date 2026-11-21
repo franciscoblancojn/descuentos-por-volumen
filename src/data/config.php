@@ -8,6 +8,8 @@ class DPV_USE_DATA_CONFIG extends DPV_USE_DATA_BASE
     protected $KEY = DPV_CONFIG;
 
     const DEFAULTS = [
+        // Descuento por cantidad (tramos). Apagado: solo se aplica el % por categoría.
+        'tiers_enabled' => 1,
         // Tramos por cantidad: el primero (desde 1) es el descuento que se guarda como precio rebajado.
         'tiers' => [
             ['min' => 1, 'max' => 5, 'percent' => 30],
@@ -82,6 +84,7 @@ class DPV_USE_DATA_CONFIG extends DPV_USE_DATA_BASE
         }
 
         return [
+            'tiers_enabled' => empty($input['tiers_enabled']) ? 0 : 1,
             'tiers' => $tiers,
             'contact_text' => sanitize_text_field(wp_unslash($input['contact_text'] ?? '')),
             'contact_url' => esc_url_raw(trim((string) ($input['contact_url'] ?? ''))),

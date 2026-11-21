@@ -18,7 +18,7 @@ class DPV_HOOK_SCHEMA
      */
     public static function specifications($product)
     {
-        if (!DPV_RULES::config()['schema_enabled'] || !$product || $product->is_type('variable') || !DPV_RULES::applies($product) || !DPV_RULES::isSynced($product)) {
+        if (!DPV_RULES::config()['schema_enabled'] || !DPV_RULES::tiersEnabled() || !$product || $product->is_type('variable') || !DPV_RULES::applies($product) || !DPV_RULES::isSynced($product)) {
             return [];
         }
         // Mismos tramos agrupados que la tabla de la ficha (con el tope aplicado).

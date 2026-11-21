@@ -33,8 +33,21 @@ class DPV_RULES
         self::$config = null;
     }
 
+    public static function tiersEnabled()
+    {
+        return !empty(self::config()['tiers_enabled']);
+    }
+
+    /**
+     * Tramos activos. Con el descuento por cantidad apagado hay un único tramo de 0 % desde 1
+     * unidad: el precio queda solo con el % de la categoría.
+     */
     public static function tiers()
     {
+        if (!self::tiersEnabled()) {
+            return [['min' => 1, 'max' => 0, 'percent' => 0]];
+        }
+
         return self::config()['tiers'];
     }
 
@@ -168,7 +181,9 @@ class DPV_RULES
             && in_array($product->get_type(), ['simple', 'external', 'variation'], true)
             && !self::isManual($product)
             && (float) $product->get_regular_price('edit') > 0
-            && self::tiers();
+            && self::tiers()
+            // Sin tramos, solo aplica a productos de una categoría con descuento.
+            && (self::tiersEnabled() || self::categoryPercent($product) > 0);
     }
 
     /**
