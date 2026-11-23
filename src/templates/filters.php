@@ -75,6 +75,14 @@ function DPV_Filters($f)
             </select>
         </label>
         <label class="dpv-field">
+            <span>Precio rebajado</span>
+            <select name="mode">
+                <option value="">Todos</option>
+                <option value="auto" <?php selected($f['mode'], 'auto'); ?>>Automático (reglas)</option>
+                <option value="manual" <?php selected($f['mode'], 'manual'); ?>>Manual</option>
+            </select>
+        </label>
+        <label class="dpv-field">
             <span>Por página</span>
             <select name="per_page">
                 <?php foreach (DPV_PRODUCTS::PER_PAGE as $n) : ?>

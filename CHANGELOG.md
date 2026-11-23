@@ -4,6 +4,11 @@ Todos los cambios importantes del plugin Descuentos por Volumen. Formato basado 
 
 > ✍️ Antes de publicar, agrega arriba una sección `## [Sin publicar]` con los cambios. `npm run push-v -- patch|minor|major` la renombra a `## [X.Y.Z] - fecha`, y no publica si esa sección no existe.
 
+## [1.2.3] - 2026-11-23
+
+### ✨ Añadido
+- 🔎 Filtro **Precio rebajado** (Todos / Automático (reglas) / Manual) en la pestaña Productos. Con «Manual» la tabla muestra los productos manuales (y las variables con alguna variación manual) y las acciones sobre «Todos los filtrados» solo tocan los manuales: p. ej. filtrar y pulsar «Volver a reglas» devuelve todos a las reglas.
+
 ## [1.2.2] - 2026-11-23
 
 ### ✨ Añadido

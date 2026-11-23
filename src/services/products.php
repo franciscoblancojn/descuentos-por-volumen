@@ -26,6 +26,7 @@ class DPV_PRODUCTS
             'brand' => sanitize_title(wp_unslash($source['brand'] ?? '')),
             'type' => sanitize_key($source['type'] ?? ''),
             'sale' => sanitize_key($source['sale'] ?? ''),
+            'mode' => sanitize_key($source['mode'] ?? ''),
             'per_page' => absint($source['per_page'] ?? 50),
             'paged' => max(1, absint($source['paged'] ?? 1)),
         ];
@@ -34,6 +35,9 @@ class DPV_PRODUCTS
         }
         if (!in_array($f['sale'], ['with', 'without'], true)) {
             $f['sale'] = '';
+        }
+        if (!in_array($f['mode'], ['auto', 'manual'], true)) {
+            $f['mode'] = '';
         }
         if (!in_array($f['per_page'], self::PER_PAGE, true)) {
             $f['per_page'] = 50;
@@ -105,11 +109,65 @@ class DPV_PRODUCTS
             $args['post__not_in'] = wc_get_product_ids_on_sale();
         }
 
+        // Modo del precio rebajado: manual (meta DPV_MANUAL_META) o automático (reglas).
+        if ('manual' === $f['mode']) {
+            $manual = self::manualParents()['any'];
+            $include = null === $include ? $manual : array_values(array_intersect($include, $manual));
+        } elseif ('auto' === $f['mode']) {
+            $args['post__not_in'] = array_values(array_unique(array_merge($args['post__not_in'] ?? [], self::manualParents()['all'])));
+        }
+
         if (null !== $include) {
             $args['post__in'] = $include ? $include : [0];
         }
 
         return $args;
+    }
+
+    /**
+     * Productos padre con precio manual:
+     *   any = simples/externos manuales y variables con alguna variación manual,
+     *   all = simples/externos manuales y variables con todas sus variaciones manuales.
+     *
+     * @return array{any:int[], all:int[]}
+     */
+    private static function manualParents()
+    {
+        global $wpdb;
+        $rows = $wpdb->get_results($wpdb->prepare(
+            "SELECT p.ID, p.post_parent, p.post_type FROM {$wpdb->posts} p
+             INNER JOIN {$wpdb->postmeta} m ON m.post_id = p.ID AND m.meta_key = %s AND m.meta_value = '1'
+             WHERE p.post_type IN ('product', 'product_variation')",
+            DPV_MANUAL_META
+        ));
+        $any = [];
+        $manual_children = [];
+        foreach ($rows as $row) {
+            if ('product_variation' === $row->post_type) {
+                $parent = (int) $row->post_parent;
+                $any[] = $parent;
+                $manual_children[$parent] = ($manual_children[$parent] ?? 0) + 1;
+            } else {
+                $any[] = (int) $row->ID;
+            }
+        }
+        $all = [];
+        foreach ($rows as $row) {
+            if ('product' === $row->post_type) {
+                $all[] = (int) $row->ID;
+            }
+        }
+        foreach ($manual_children as $parent => $count) {
+            $children = $wpdb->get_var($wpdb->prepare(
+                "SELECT COUNT(*) FROM {$wpdb->posts} WHERE post_parent = %d AND post_type = 'product_variation' AND post_status IN ('publish', 'private')",
+                $parent
+            ));
+            if ((int) $children > 0 && $count >= (int) $children) {
+                $all[] = $parent;
+            }
+        }
+
+        return ['any' => array_values(array_unique($any)), 'all' => array_values(array_unique($all))];
     }
 
     /**
@@ -192,7 +250,18 @@ class DPV_PRODUCTS
             'no_found_rows' => true,
         ]));
 
-        return self::expand($parent_ids);
+        $ids = self::expand($parent_ids);
+        if ($f['mode'] ?? '') {
+            // En variables, solo las variaciones del modo pedido.
+            $want_manual = 'manual' === $f['mode'];
+            $ids = array_values(array_filter($ids, function ($id) use ($want_manual) {
+                $product = wc_get_product($id);
+
+                return $product && DPV_RULES::isManual($product) === $want_manual;
+            }));
+        }
+
+        return $ids;
     }
 
     /**
