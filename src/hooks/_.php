@@ -1,5 +1,6 @@
 <?php
 
+require_once DPV_DIR . 'src/hooks/editor.php';
 require_once DPV_DIR . 'src/hooks/sync.php';
 require_once DPV_DIR . 'src/hooks/auto-sync.php';
 require_once DPV_DIR . 'src/hooks/cart.php';

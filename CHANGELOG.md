@@ -2,7 +2,17 @@
 
 Todos los cambios importantes del plugin Descuentos por Volumen. Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
-> ✍️ Antes de publicar, agrega arriba una sección `## [Sin publicar]` con los cambios. `npm run push-v -- patch|minor|major` la renombra a `## [X.Y.Z] - fecha`, y no publica si esa sección no existe.
+> ✍️ Antes de publicar, agrega arriba una sección `## [Sin publicar]
+
+### ✨ Añadido
+- 🔘 Interruptor **Aplicar descuentos automáticos** en el editor del producto, justo debajo del precio normal (productos simples y cada variación). Viene **activado**.
+  - Activado: no se muestra el campo **Precio rebajado** ni su horario; al guardar, el precio rebajado se calcula con las reglas (tramo + % de la categoría). Debajo se ve el precio y el % que dan las reglas.
+  - Desactivado: aparece el campo **Precio rebajado** y, al guardar, el producto queda **manual** (las reglas no lo cambian).
+  - Los productos que ya eran manuales aparecen con el interruptor desactivado; activarlo y guardar los devuelve a las reglas.
+
+### 🐛 Corregido
+- 🛠️ Guardar un producto desde el editor con el **precio rebajado vacío** lo marcaba como manual sin avisar, y desde entonces no recibía ni el tramo ni el % de su categoría. Ahora, desde el editor, solo pasa a manual desactivando el interruptor.
+- 📝 Los cambios entre manual y automático desde el editor quedan en el log del plugin (`editor_manual` / `editor_rules`).
 
 ## [1.2.1] - 2026-11-21
 

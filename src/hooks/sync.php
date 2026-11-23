@@ -22,7 +22,32 @@ class DPV_HOOK_SYNC
 
     public static function beforeSave($product)
     {
-        if (!self::enabled() || !in_array($product->get_type(), ['simple', 'external', 'variation'], true) || DPV_RULES::isManual($product)) {
+        if (!self::enabled() || !in_array($product->get_type(), ['simple', 'external', 'variation'], true)) {
+            return;
+        }
+
+        // Interruptor "Aplicar descuentos automáticos" del editor (DPV_HOOK_EDITOR).
+        $intent = DPV_HOOK_EDITOR::intent($product);
+        $was_manual = DPV_RULES::isManual($product);
+        $changes = $product->get_changes();
+        $typed = array_key_exists('sale_price', $changes) ? (string) $changes['sale_price'] : null;
+
+        if (false === $intent) {
+            // Desactivado: manual, con el precio rebajado que se haya escrito.
+            if (!$was_manual) {
+                $product->update_meta_data(DPV_MANUAL_META, '1');
+                self::log($product, 'manual');
+            }
+            return;
+        }
+        if (true === $intent) {
+            // Activado: el campo de precio rebajado está oculto, siempre mandan las reglas.
+            if ($was_manual) {
+                $product->delete_meta_data(DPV_MANUAL_META);
+                self::log($product, 'rules');
+            }
+            $typed = null;
+        } elseif ($was_manual) {
             return;
         }
 
@@ -33,15 +58,32 @@ class DPV_HOOK_SYNC
         $new = wc_format_decimal($new, DPV_DISCOUNT::decimals());
 
         // Precio rebajado editado a mano (y distinto del de las reglas): se respeta y queda manual.
-        $changes = $product->get_changes();
-        if (array_key_exists('sale_price', $changes) && (string) $changes['sale_price'] !== (string) $new) {
+        if (null !== $typed && $typed !== (string) $new) {
             $product->update_meta_data(DPV_MANUAL_META, '1');
+            self::log($product, 'manual');
             return;
         }
         if ((string) $product->get_sale_price('edit') !== (string) $new) {
             $product->set_sale_price($new);
             $product->set_date_on_sale_from(null);
             $product->set_date_on_sale_to(null);
+        }
+    }
+
+    /**
+     * Cambio de estado manual/reglas al guardar desde el editor (queda en el log del plugin).
+     */
+    private static function log($product, $mode)
+    {
+        if (class_exists('franciscoblancojn\\wordpress_utils\\FWUSystemLog')) {
+            \franciscoblancojn\wordpress_utils\FWUSystemLog::add(DPV_KEY, [
+                'type' => 'editor_' . $mode,
+                'data' => [
+                    'id' => $product->get_id(),
+                    'sale_price' => $product->get_sale_price('edit'),
+                    'user' => get_current_user_id(),
+                ],
+            ]);
         }
     }
 

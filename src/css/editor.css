@@ -1,0 +1,92 @@
+/* Editor del producto: interruptor "Aplicar descuentos automáticos" (src/js/editor.js). */
+
+.dpv-auto {
+    clear: both;
+}
+
+.dpv-auto.form-field {
+    padding: 5px 20px 5px 162px !important;
+    margin: 9px 0;
+}
+
+.dpv-auto--variation {
+    margin: 4px 0 10px;
+}
+
+.dpv-auto__switch {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 10px;
+    float: none !important;
+    width: auto !important;
+    margin: 0 !important;
+    cursor: pointer;
+}
+
+.dpv-auto__input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+}
+
+.dpv-auto__slider {
+    position: relative;
+    flex: 0 0 36px;
+    width: 36px;
+    height: 20px;
+    border-radius: 20px;
+    background: #8c8f94;
+    transition: background 0.2s;
+}
+
+.dpv-auto__slider::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    transition: transform 0.2s;
+}
+
+.dpv-auto__input:checked + .dpv-auto__slider {
+    background: #2271b1;
+}
+
+.dpv-auto__input:checked + .dpv-auto__slider::after {
+    transform: translateX(16px);
+}
+
+.dpv-auto__input:focus-visible + .dpv-auto__slider {
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #2271b1;
+}
+
+.dpv-auto__label {
+    font-weight: 600;
+}
+
+.dpv-auto .description {
+    display: block;
+    clear: both;
+    margin: 6px 0 0 !important;
+    padding: 0 !important;
+}
+
+.dpv-auto .dpv-auto__on,
+.dpv-auto.is-on .dpv-auto__off {
+    display: none;
+}
+
+.dpv-auto.is-on .dpv-auto__on {
+    display: block;
+}
+
+/* Activado: sin precio rebajado ni horario (los pone las reglas). */
+.dpv-auto-on ._sale_price_field,
+.dpv-auto-on .sale_price_dates_fields,
+.dpv-auto-on p[class*="variable_sale_price"] {
+    display: none !important;
+}
