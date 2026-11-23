@@ -2,7 +2,9 @@
 
 Todos los cambios importantes del plugin Descuentos por Volumen. Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
-> ✍️ Antes de publicar, agrega arriba una sección `## [Sin publicar]
+> ✍️ Antes de publicar, agrega arriba una sección `## [Sin publicar]` con los cambios. `npm run push-v -- patch|minor|major` la renombra a `## [X.Y.Z] - fecha`, y no publica si esa sección no existe.
+
+## [1.2.2] - 2026-11-23
 
 ### ✨ Añadido
 - 🔘 Interruptor **Aplicar descuentos automáticos** en el editor del producto, justo debajo del precio normal (productos simples y cada variación). Viene **activado**.
